@@ -8,28 +8,28 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DatingApp.API.Controllers
 {
-    [Route("api/members")]
-    [ApiController]
-    public class MemberController : BaseController
+  [Route("api/members")]
+  [ApiController]
+  public class MemberController : BaseController
+  {
+    public IMemberService _memberService;
+    public MemberController(IMemberService memberService)
     {
-        public IMemberService _memberService;
-        public MemberController(IMemberService memberService)
-        {
-            _memberService = memberService;
-        }
-        [HttpGet]
-        public ActionResult<List<MemberDTO>> Get()
-        {
-            return Ok(_memberService.GetMembers());
-        }
-
-        [HttpGet("{username}")]
-        public ActionResult<MemberDTO> Get(string username)
-        {
-            var member = _memberService.GetMemberByUsername(username);
-            if (member == null) return NotFound();
-            return Ok(member);
-        }
-
+      _memberService = memberService;
     }
+    [HttpGet]
+    public ActionResult<List<MemberDTO>> Get(MemberFilterDTO memberFilterDTO)
+    {
+      return Ok(_memberService.GetMembers(memberFilterDTO));
+    }
+
+    [HttpGet("{username}")]
+    public ActionResult<MemberDTO> Get(string username)
+    {
+      var member = _memberService.GetMemberByUsername(username);
+      if (member == null) return NotFound();
+      return Ok(member);
+    }
+
+  }
 }
